@@ -1,0 +1,21 @@
+% This is a graph.
+
+n 0.0 1.0
+n 1.0 1.0
+n 2.0 1.0
+n 3.0 1.0
+n 4.0 1.0
+n 5.0 1.0
+
+e 4 5 14fun
+e 1 5 21fun
+e 1 4 1fun
+e 3 1 11fun
+e 3 2 2fun
+e 3 4 5fun
+e 2 4 12fun
+e 0 1 7fun
+e 0 3 10fun
+e 0 2 8fun
+
+% End of graph

@@ -24,8 +24,7 @@ let () =
   (* Open file *)
   let graph = from_file infile in
 
-  (*let map_graph = gmap graph (fun x -> x^"fun") in*)
-  
+  let map_graph = gmap graph (fun x -> x^"fun") in
 
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile map_graph in
