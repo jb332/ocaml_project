@@ -1,5 +1,4 @@
-open Gfile;;
-open Tools;;
+open Gfile
     
 let () =
 
@@ -24,11 +23,12 @@ let () =
   (* Open file *)
   let graph = from_file infile in
 
-  (*let map_graph = gmap graph (fun x -> x^"fun") in*)
-  
+  let graph1 = Tools.gmap graph (fun x -> x^"aaaaaaa") in
+
+  export "graph_dot.gv" graph1;
 
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile map_graph in
+  let () = write_file outfile (graph1) in
 
   ()
 
