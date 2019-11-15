@@ -1,6 +1,8 @@
-open Gfile;;
-open Tools;;
-    
+open Gfile
+open Tools
+open Flow
+open Graph
+
 let () =
 
   (* Check the number of command-line arguments *)
@@ -22,12 +24,16 @@ let () =
   in
 
   (* Open file *)
-  let graph = from_file infile in
+  let fgraph_str = from_file infile in
+  let fgraph = gmap fgraph_str flow_of_string in
+  let dgraph = generate_diff_gr fgraph in
+  let dgraph_str = gmap dgraph string_of_diff in
 
-  let map_graph = gmap graph (fun x -> x^"fun") in
+  export "fgraph_dot.gv" fgraph_str;
+  export "dgraph_dot.gv" dgraph_str;
 
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile map_graph in
+  let () = write_file outfile (dgraph_str) in
 
   ()
 

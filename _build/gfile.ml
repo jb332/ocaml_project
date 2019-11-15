@@ -18,6 +18,21 @@ type path = string
 
  *)
 
+let export path gr =
+
+  let ff = open_out path in
+
+  fprintf ff "digraph finite_state_machine { 
+size=\"8,5\"
+node [shape = circle]; \n";
+  let print_arc  id1 id2 lbl =
+    fprintf ff "%d -> %d [ label = \"%s\"];\n" id1 id2 lbl
+  in
+  e_iter gr print_arc;
+  fprintf ff "}"
+  
+
+  
 let write_file path graph =
 
   (* Open a write-file. *)
