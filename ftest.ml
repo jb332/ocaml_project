@@ -2,6 +2,7 @@ open Gfile
 open Tools
 open Flow
 open Graph
+open Path
 
 let () =
 
@@ -14,10 +15,10 @@ let () =
 
 
   (* Arguments are : infile(1) source-id(2) sink-id(3) outfile(4) *)
-  
+
   let infile = Sys.argv.(1)
   and outfile = Sys.argv.(4)
-  
+
   (* These command-line arguments are not used for the moment. *)
   and _source = int_of_string Sys.argv.(2)
   and _sink = int_of_string Sys.argv.(3)
@@ -27,13 +28,17 @@ let () =
   let fgraph_str = from_file infile in
   let fgraph = gmap fgraph_str flow_of_string in
   let dgraph = generate_diff_gr fgraph in
+  let path = find_path 0 5 fgraph_str in
+
+
   let dgraph_str = gmap dgraph string_of_diff in
 
-  export "fgraph_dot.gv" fgraph_str;
-  export "dgraph_dot.gv" dgraph_str;
+    p_iter (fun (a,b) -> Printf.printf "Noeud traversé : %d \n %!" a) path;
+    export "fgraph_dot.gv" fgraph_str;
+      export "dgraph_dot.gv" dgraph_str;
 
-  (* Rewrite the graph that has been read. *)
-  let () = write_file outfile (dgraph_str) in
+      (* Rewrite the graph that has been read. *)
+      let () = write_file outfile (dgraph_str) in
 
-  ()
+      ()
 
