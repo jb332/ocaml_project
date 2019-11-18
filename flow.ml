@@ -47,12 +47,7 @@ let generate_diff_gr fgr =
     let dgr_arcs_neg = e_fold fgr generate_diff_arc_neg dgr_arcs_pos in
     dgr_arcs_neg
 
-let get_src gr = gr.src
-let get_dst gr = gr.dst
-let get_cap lbl = lbl.capacity
-let get_flow gr = gr.flow
-let get_graph gr = gr.gr
-                     
+
                     
 
 

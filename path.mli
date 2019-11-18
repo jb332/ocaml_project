@@ -13,3 +13,5 @@ val find_path: id -> id -> 'a graph -> 'a path
 
 val min_cost: 'a path -> 'a
 
+val contains: id -> 'a path -> bool 
+

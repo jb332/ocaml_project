@@ -65,7 +65,11 @@ let min_cost path =
     let (frst_id, frst_lbl) = List.hd path.lst in
   with
   |Failure s -> Printf.printf "Acces a la tete d'une liste vide %s" s; 
-  find_min path.lst frst_lbl
+    find_min path.lst frst_lbl
+
+let contains id path = match path.lst with
+  |[] -> false
+  |(i, _)::rest -> if(i = id) then true else contains id {dpt=path.dpt; lst = rest}
     
 
 
