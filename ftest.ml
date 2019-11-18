@@ -26,19 +26,25 @@ let () =
 
   (* Open file *)
   let fgraph_str = from_file infile in
+  (* Pour test graphs de flots 
   let fgraph = gmap fgraph_str flow_of_string in
   let dgraph = generate_diff_gr fgraph in
-  let path = find_path 0 5 fgraph_str in
+let dgraph_str = gmap dgraph string_of_diff in
+  *)
+
+  let fgraph = gmap fgraph_str int_of_string in
+  let path = find_path 0 7 fgraph in
 
 
-  let dgraph_str = gmap dgraph string_of_diff in
+  
 
-    p_iter (fun (a,b) -> Printf.printf "Noeud traversé : %d \n %!" a) path;
-    export "fgraph_dot.gv" fgraph_str;
-      export "dgraph_dot.gv" dgraph_str;
+  p_iter (fun (a,b) -> Printf.printf "Noeud traversé : %d \n %!" a) path;
+  Printf.printf "arc au cout min %d \n %! " (min_cost path) ;
+    export "fgraph2_dot.gv" fgraph_str;
+  (*export "dgraph_dot.gv" dgraph_str;*)
 
       (* Rewrite the graph that has been read. *)
-      let () = write_file outfile (dgraph_str) in
+      let () = write_file outfile (fgraph_str) in
 
       ()
 

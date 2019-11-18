@@ -11,4 +11,5 @@ val p_iter: (id * 'a -> unit) -> 'a path -> unit
 
 val find_path: id -> id -> 'a graph -> 'a path
 
+val min_cost: 'a path -> 'a
 

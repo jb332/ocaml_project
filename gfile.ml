@@ -23,6 +23,7 @@ let export path gr =
   let ff = open_out path in
 
   fprintf ff "digraph finite_state_machine { 
+rankdir=LR;
 size=\"8,5\"
 node [shape = circle]; \n";
   let print_arc  id1 id2 lbl =

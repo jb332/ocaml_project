@@ -54,7 +54,16 @@ let find_path ids idd gr =
       traiter_arcs arcs_sortants
   in
     match dfs ids idd gr [] [] with
-      |(pth, lst_parc) -> {dpt = ids; lst = (List.rev pth)}
+    |(pth, lst_parc) -> {dpt = ids; lst = (List.rev pth)}
+
+let min_cost path =
+  let rec find_min lst min = match lst with
+    |[] -> min
+    |(id, lbl)::b -> if (lbl<min) then find_min b lbl else find_min b min
+  in
+  let (frst_id, frst_lbl) = List.hd path.lst in
+  find_min path.lst frst_lbl
+    
 
 
 
