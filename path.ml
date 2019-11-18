@@ -61,7 +61,10 @@ let min_cost path =
     |[] -> min
     |(id, lbl)::b -> if (lbl<min) then find_min b lbl else find_min b min
   in
-  let (frst_id, frst_lbl) = List.hd path.lst in
+  try
+    let (frst_id, frst_lbl) = List.hd path.lst in
+  with
+  |Failure s -> Printf.printf "Acces a la tete d'une liste vide %s" s; 
   find_min path.lst frst_lbl
     
 
