@@ -3,7 +3,7 @@ open Tools
 open Flow
 open Graph
 
-(* Run something like "./ftest.native graph 1 5 new_graph" *)
+(* Run something like "./ftest.native graph 0 5 new_graph" *)
 
 let () =
 
