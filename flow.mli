@@ -1,19 +1,8 @@
 open Graph
 open Tools
 
-type flow_lbl = {
-    flow: int;
-    capacity: int
-  }
-
+type flow_lbl
 type diff_lbl = int
-
-type flow_graph = {
-  src: int;
-  dst: int;
-  gr: flow_lbl graph
-}
-  
 
 
 val flow_of_string: string -> flow_lbl
@@ -26,6 +15,11 @@ val generate_diff_gr: flow_lbl graph -> diff_lbl graph
 
 
 
+type path
 
-    
-  
+val dfs: diff_lbl graph -> id -> id -> path
+val print_path: path -> unit
+
+val update_flow_graph: flow_lbl graph -> path -> flow_lbl graph
+
+val ford_fulkerson: flow_lbl graph -> id -> id -> flow_lbl graph
