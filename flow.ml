@@ -34,11 +34,19 @@ let string_of_diff dlbl = string_of_int dlbl
 
 (* Création d'un arc d'écart positif *)
 let get_ecart_pos flbl = (flbl.capacity - flbl.flow)
-let generate_diff_arc_pos gr_acu id1 id2 flbl = new_arc gr_acu id1 id2 (get_ecart_pos flbl)
+let generate_diff_arc_pos gr_acu id1 id2 flbl =
+	let ecart_pos = get_ecart_pos flbl in
+	match ecart_pos with
+		| 0 -> gr_acu
+		| _ -> new_arc gr_acu id1 id2 ecart_pos
 
 (* Création d'un arc d'écart négatif *)
 let get_ecart_neg flbl = flbl.flow
-let generate_diff_arc_neg gr_acu id1 id2 flbl = new_arc gr_acu id2 id1 (get_ecart_neg flbl)
+let generate_diff_arc_neg gr_acu id1 id2 flbl =
+	let ecart_neg = get_ecart_neg flbl in
+	match ecart_neg with
+		| 0 -> gr_acu
+		| _ -> new_arc gr_acu id2 id1 ecart_neg
 
 (* Génération d'un graphe d'écart à partir d'un graph de flots *)
 let generate_diff_gr fgr =
