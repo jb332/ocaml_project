@@ -54,23 +54,26 @@ let find_path ids idd gr =
       traiter_arcs arcs_sortants
   in
     match dfs ids idd gr [] [] with
-    |(pth, lst_parc) -> {dpt = ids; lst = (List.rev pth)}
+      |(pth, lst_parc) -> {dpt = ids; lst = (List.rev pth)}
 
 let min_cost path =
   let rec find_min lst min = match lst with
     |[] -> min
     |(id, lbl)::b -> if (lbl<min) then find_min b lbl else find_min b min
   in
-  try
-    let (frst_id, frst_lbl) = List.hd path.lst in
-  with
-  |Failure s -> Printf.printf "Acces a la tete d'une liste vide %s" s; 
-    find_min path.lst frst_lbl
 
-let contains id path = match path.lst with
+  let (frst_id, frst_lbl) = List.hd path.lst in
+    find_min path.lst frst_lbl
+(*    
+with
+      |Failure s -> Printf.printf "Acces a la tete d'une liste vide %s" s; *)
+
+
+
+let rec contains id path = match path.lst with
   |[] -> false
   |(i, _)::rest -> if(i = id) then true else contains id {dpt=path.dpt; lst = rest}
-    
+
 
 
 

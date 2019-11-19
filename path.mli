@@ -1,7 +1,9 @@
 open Graph
 
 (*Liste de Noeuds*)
-type 'a path
+type 'a path = {dpt : int;
+                lst : (id*'a) list
+               }
 
 val init_path: int -> 'a path
 

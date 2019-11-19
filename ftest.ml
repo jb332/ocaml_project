@@ -3,6 +3,7 @@ open Tools
 open Flow
 open Graph
 open Path
+open Folks_fulgerson
 
 let () =
 
@@ -26,25 +27,29 @@ let () =
 
   (* Open file *)
   let fgraph_str = from_file infile in
-  (* Pour test graphs de flots 
+
   let fgraph = gmap fgraph_str flow_of_string in
-  let dgraph = generate_diff_gr fgraph in
-let dgraph_str = gmap dgraph string_of_diff in
-  *)
-
-  let fgraph = gmap fgraph_str int_of_string in
-  let path = find_path 0 7 fgraph in
+  (*let dgraph = generate_diff_gr fgraph in *)
+  let d_optimized = optimize_flow ({src = 0; dst=1; gr = fgraph}) in
+  let final_graph_str = gmap d_optimized.gr string_of_flow in
+    (*let dgraph_str = gmap dgraph string_of_diff in *)
 
 
-  
+    (* let fgraph = gmap fgraph_str int_of_string in *)
+    (* let path = find_path 0 7 fgraph in *)
 
-  p_iter (fun (a,b) -> Printf.printf "Noeud traversé : %d \n %!" a) path;
-  Printf.printf "arc au cout min %d \n %! " (min_cost path) ;
-    export "fgraph2_dot.gv" fgraph_str;
-  (*export "dgraph_dot.gv" dgraph_str;*)
 
-      (* Rewrite the graph that has been read. *)
-      let () = write_file outfile (fgraph_str) in
+
+    (* Test classe path 
+       p_iter (fun (a,b) -> Printf.printf "Noeud traversé : %d \n %!" a) path;
+       Printf.printf "arc au cout min %d \n %! " (min_cost path) ;
+       export "fgraph2_dot.gv" fgraph_str;
+    *)
+    export "final_graph_dot.gv" final_graph_str; 
+
+    (* Rewrite the graph that has been read. *)
+
+    let () = write_file outfile (fgraph_str) in
 
       ()
 
