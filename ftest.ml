@@ -26,12 +26,13 @@ let () =
   in
 
   let graph_str = from_file infile in
-  let graph = gmap graph_str flow_of_string in
+  let graph = generate_flow_graph graph_str in
   let new_graph = ford_fulkerson graph _source _sink in
+
   let new_graph_str = gmap new_graph string_of_flow in
 
   export "graph_dot.gv" graph_str;
-  export "new_graph_dot.gv" new_graph_str;
+  export outfile new_graph_str;
 
   (*
   dot -Tsvg graph_dot.gv > graph.svg && dot -Tsvg new_graph_dot.gv > new_graph.svg
