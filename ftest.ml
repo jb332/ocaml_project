@@ -3,6 +3,13 @@ open Tools
 open Flow
 open Graph
 
+open Bipartite
+
+let () =
+    main
+
+(*
+
 (* In order to test, run something like "./ftest.native graph 0 5 new_graph_dot.gv" *)
 
 let () =
@@ -40,3 +47,4 @@ let () =
 	"dot -Tsvg graph_dot.gv > graph.svg && dot -Tsvg new_graph_dot.gv > new_graph.svg"
 	*)
 
+*)
