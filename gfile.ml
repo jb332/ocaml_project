@@ -74,6 +74,17 @@ let read_comment graph line =
     Printf.printf "Unknown line:\n%s\n%!" line ;
     failwith "from_file"
 
+type applicant_wishes = {applicant: string;
+                         wished_jobs: string list
+                        }
+  
+let read_candidate line =
+  try Scanf.sscanf line "%s: %s" (fun s1 s2 -> {applicant = s1;
+                                 wished_jobs = List.map String.trim (String.split_on_char ',' s2)})
+  with _ ->
+    Printf.printf "Unknown line:\n%s\n%!" line ;
+    failwith "from_file_candidate"
+
 let from_file path =
 
   let infile = open_in path in
@@ -108,4 +119,28 @@ let from_file path =
   
   close_in infile ;
   final_graph
+
+  
+  let from_file_candidate path =
+
+     let infile = open_in path in
+
+  (* Read all lines until end of file. 
+   * n is the current node counter. *)
+     let rec loop lst_cand =
+       
+    try
+      let line = input_line infile in
+
+      (* Remove leading and trailing spaces. *)
+      let line = String.trim line in
+
+      loop ((read_candidate line) ::lst_cand)
+
+    with End_of_file -> lst_cand (* Done *)
+  in
+    
+  let final_lst = loop [] in
+  close_in infile ;
+  final_lst
   
