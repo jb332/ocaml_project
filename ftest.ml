@@ -3,7 +3,7 @@ open Tools
 open Flow
 open Graph
 
-(* In order to test, run something like "./ftest.native graph 0 5 new_graph" *)
+(* In order to test, run something like "./ftest.native graph 0 5 new_graph_dot.gv" *)
 
 let () =
 
@@ -24,22 +24,19 @@ let () =
 	in
 
 
-  let graph_str = from_file infile in
-  let graph = generate_flow_graph graph_str in
-  let new_graph = ford_fulkerson graph _source _sink in
+	let graph_str = from_file infile in
+	let graph = generate_flow_graph graph_str in
+	let fgraph_str = gmap graph string_of_flow in
+	let new_graph = ford_fulkerson graph _source _sink in
 
-  let new_graph_str = gmap new_graph string_of_flow in
+	let new_graph_str = gmap new_graph string_of_flow in
 
-  export "graph_dot.gv" graph_str;
-  export outfile new_graph_str;
+	export "graph_dot.gv" fgraph_str;
+	export outfile new_graph_str
 
 
 	(*
 	This is the command to convert ".gv" files into ".svg" vectorial images :
 	"dot -Tsvg graph_dot.gv > graph.svg && dot -Tsvg new_graph_dot.gv > new_graph.svg"
 	*)
-
-
-
-	()
 
