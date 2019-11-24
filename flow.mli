@@ -1,7 +1,10 @@
 open Graph
 open Tools
 
-type flow_lbl
+type flow_lbl = {
+    flow: int;
+    capacity: int
+}
 
 val flow_of_string: string -> flow_lbl
 val string_of_flow: flow_lbl -> string

@@ -1,6 +1,9 @@
 open Graph
+open Flow
 
 type applicant = string
+type applicants = applicant list
+
 type job = string
 type jobs = job list
 
@@ -9,7 +12,7 @@ type applicant_wishes = {
 	wished_jobs: jobs
 }
 
-type applicants_whishes = applicant_wishes list
+type applicants_wishes = applicant_wishes list
 
 type id_string_entry = (string * id)
 type id_string_table = id_string_entry list
@@ -41,7 +44,7 @@ let add_applicants = add_elements get_applicants
 let add_jobs = add_elements get_jobs
 *)
 
-let associate_ids aw =
+let associate_ids applicants jobs =
 	let rec add_applicants n applicants = match applicants with
 		| [] -> []
 		| applicant :: rest -> (applicant, n) :: add_applicants (n+1) rest
@@ -50,44 +53,73 @@ let associate_ids aw =
 		| [] -> []
 		| job :: rest -> (job, n) :: add_jobs (n+1) rest
 	in
-    let app_str_id_list = add_applicants 1 (get_applicants aw) in
-    let nb_applicants = List.length app_str_id_list in
-    let job_str_id_list = add_jobs (nb_applicants+1) (get_jobs aw) in
-    let nb_jobs = List.length job_str_id_list in
-    List.concat [ [("Source", 0)] ; app_str_id_list ; job_str_id_list ; [("Sink", nb_applicants+nb_jobs+1)] ]
+  let app_str_id_list = add_applicants 1 applicants in
+  let nb_applicants = List.length app_str_id_list in
+  let job_str_id_list = add_jobs (nb_applicants+1) jobs in
+  let nb_jobs = List.length job_str_id_list in
+  List.concat [ [("Source", 0)] ; app_str_id_list ; job_str_id_list ; [("Sink", nb_applicants+nb_jobs+1)] ]
 
 let get_id_of_str cor_table str = List.assoc str cor_table
 
+let get_str_of_id cor_table id =
+	let element = List.find (fun (current_str, current_id) -> current_id = id) cor_table in
+	match element with (str_found, id_found) -> str_found
+
+(*List.assoc id (List.map (fun (str, id) -> (id, str)) cor_table)*)
+
 let rec print_cor_table cor_table = match cor_table with
-    | [] -> Printf.printf "\n\n%!"
-    | (str, id) :: rest -> Printf.printf "\n%s -> %d%!" str id; print_cor_table rest
-    
+	| [] -> Printf.printf "\n\n%!"
+	| (str, id) :: rest -> Printf.printf "\n%s -> %d%!" str id; print_cor_table rest
+
+let generate_graph aw cor_table applicants jobs =
+	let generate_nodes cor_table = 
+		let nodes = List.map (fun (_, id) -> id) cor_table in
+		List.fold_left new_node empty_graph nodes
+	in
+	let generate_applicant_arcs applicant_wishes graph =
+		let applicant_id = get_id_of_str cor_table applicant_wishes.applicant in
+		let applicant_wished_jobs_ids = List.map (get_id_of_str cor_table) applicant_wishes.wished_jobs in
+		let applicant_arcs = List.map (fun applicant_wished_job_id -> (applicant_id, applicant_wished_job_id, {flow = 0 ; capacity = 1})) applicant_wished_jobs_ids in
+		let rec loop applicant_arcs = match applicant_arcs with
+			| [] -> graph
+			| (id1, id2, flbl) :: rest -> new_arc (loop rest) id1 id2 flbl
+		in
+		loop applicant_arcs
+	in
+	let rec generate_arcs aw graph = match aw with
+		| [] -> graph
+		| applicant_wishes :: rest -> generate_arcs rest (generate_applicant_arcs applicant_wishes graph)
+	in
+	let rec add_source_arcs graph applicants = match applicants with
+		| [] -> graph
+		| applicant :: rest -> new_arc (add_source_arcs graph rest) 0 (get_id_of_str cor_table applicant) {flow = 0 ; capacity = 1}
+	in
+	let rec add_sink_arcs graph jobs = match jobs with
+		| [] -> graph
+		| job :: rest -> new_arc (add_sink_arcs graph rest) (get_id_of_str cor_table job) ((List.length cor_table)-1) {flow = 0 ; capacity = 1}
+	in
+	add_source_arcs (add_sink_arcs (generate_arcs aw (generate_nodes cor_table)) jobs) applicants
+
+let solve_bipartite aw =
+	let applicants = get_applicants aw in
+	let jobs = get_jobs aw in
+	let cor_table = associate_ids applicants jobs in
+	let graph_in = generate_graph aw cor_table applicants jobs in
+	let graph_out = ford_fulkerson graph_in 0 ((List.length cor_table)-1) in
+	graph_out
 
 let main =
-    let aw = [
-        {
-            applicant = "John";
-            wished_jobs = ["Carpenter"; "Mason"]
-        } ; {
-            applicant = "Joe";
-            wished_jobs = ["Farmer" ; "Baker" ; "Carpenter"]
-        } ; {
-            applicant = "James";
-            wished_jobs = ["Programmer" ; "Farmer" ; "Plumber"]
-        }
-    ] in
-    let cor_table = associate_ids aw in
-    print_cor_table cor_table
+	let aw = [
+		{
+			applicant = "John";
+			wished_jobs = ["Carpenter"; "Mason"]
+		} ; {
+			applicant = "Joe";
+			wished_jobs = ["Farmer" ; "Baker" ; "Carpenter"]
+		} ; {
+			applicant = "James";
+			wished_jobs = ["Programmer" ; "Farmer" ; "Plumber"]
+		}
+	] in
+	solve_bipartite aw
 
-(*
-let generate_nodes aw =
-	let gr = new_node empty_graph 0 in
-	let rec loop gr aw = match aw with
-		| [] -> gr
-		| x :: rest -> loop (new_node gr x.applicant) rest
-	in
-*)	
-
-
-
-let ignore_spaces str = String.concat "" (String.split_on_char ' ' str)

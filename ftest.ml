@@ -2,11 +2,12 @@ open Gfile
 open Tools
 open Flow
 open Graph
-
 open Bipartite
 
 let () =
-    main
+    let graph = main in
+		let str_graph = gmap graph string_of_flow in
+		export "bipartite.gv" str_graph
 
 (*
 
