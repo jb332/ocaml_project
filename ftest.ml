@@ -4,10 +4,7 @@ open Flow
 open Graph
 open Bipartite
 
-let () =
-    let graph = main in
-		let str_graph = gmap graph string_of_flow in
-		export "bipartite.gv" str_graph
+let () = test_bipartite
 
 (*
 
@@ -35,7 +32,7 @@ let () =
 	let graph_str = from_file infile in
 	let graph = generate_flow_graph graph_str in
 	let fgraph_str = gmap graph string_of_flow in
-	let new_graph = ford_fulkerson graph _source _sink in
+	let new_graph = ford_fulkerson graph _source _sink in true
 
 	let new_graph_str = gmap new_graph string_of_flow in
 

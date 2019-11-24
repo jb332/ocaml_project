@@ -179,13 +179,14 @@ let update_flow_arc path n gr id1 id2 flbl =
 
 (* Update the graph by incrementing or decrementing the flow of the arcs in the path *)
 (* To be used in "ford_fulkerson" *)
-let update_flow_graph gr path =
+let update_flow_graph gr path verbose =
 	let n = get_min_cost_path path in
-	(* start print zone *)
-	Printf.printf "\n%!";
-	print_path path;
-	Printf.printf "flot minimum : %d\n%!" n;
-	(* end print zone *)
+	if verbose then
+		begin
+			Printf.printf "\n%!";
+			print_path path;
+			Printf.printf "flot minimum : %d\n%!" n
+		end;
 	e_fold gr (update_flow_arc path n) gr
 
 (* Get the sum of the flows going out of the source *)
@@ -198,14 +199,15 @@ let flow_src_out gr id_src =
 	loop (out_arcs gr id_src)
 
 (* Max flow algorithm *)
-let ford_fulkerson gr id_src id_dst =
+let ford_fulkerson gr id_src id_dst verbose =
 	let rec loop fgr = 
 		let dgr = generate_diff_gr fgr in
 		let path = (dfs dgr id_src id_dst) in
 		match path with
 			| [] -> fgr
-			| path -> loop (update_flow_graph fgr path)
+			| path -> loop (update_flow_graph fgr path verbose)
 	in
 	let max_flow_gr = loop gr in
-	Printf.printf "\nmax flow : %d\n%!" (flow_src_out max_flow_gr id_src);
+	if verbose then
+		Printf.printf "\nmax flow : %d\n%!" (flow_src_out max_flow_gr id_src);
 	max_flow_gr

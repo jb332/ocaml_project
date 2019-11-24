@@ -100,15 +100,29 @@ let generate_graph aw cor_table applicants jobs =
 	in
 	add_source_arcs (add_sink_arcs (generate_arcs aw (generate_nodes cor_table)) jobs) applicants
 
+let print_affectations graph_out cor_table =
+	let applicant_nodes = List.map (fun (id, _) -> id) (out_arcs graph_out 0) in
+	let get_attributed_job_node applicant_node =
+		match List.find (fun (id, flbl) -> flbl.flow = 1) (out_arcs graph_out applicant_node) with
+			| (id, _) -> id
+	in
+	let print_affectation applicant_node = 
+		try
+			Printf.printf "%s : %s\n%!" (get_str_of_id cor_table applicant_node) (get_str_of_id cor_table (get_attributed_job_node applicant_node))
+		with
+			Not_found -> Printf.printf "%s : -\n%!" (get_str_of_id cor_table applicant_node)
+	in
+	List.iter print_affectation applicant_nodes
+
 let solve_bipartite aw =
 	let applicants = get_applicants aw in
 	let jobs = get_jobs aw in
 	let cor_table = associate_ids applicants jobs in
 	let graph_in = generate_graph aw cor_table applicants jobs in
-	let graph_out = ford_fulkerson graph_in 0 ((List.length cor_table)-1) in
-	graph_out
+	let graph_out = ford_fulkerson graph_in 0 ((List.length cor_table)-1) false in
+	print_affectations graph_out cor_table
 
-let main =
+let test_bipartite =
 	let aw = [
 		{
 			applicant = "John";
@@ -116,6 +130,12 @@ let main =
 		} ; {
 			applicant = "Joe";
 			wished_jobs = ["Farmer" ; "Baker" ; "Carpenter"]
+		} ; {
+			applicant = "Jack";
+			wished_jobs = ["Carpenter"; "Mason"]
+		} ; {
+			applicant = "Jake";
+			wished_jobs = ["Carpenter"; "Mason"]
 		} ; {
 			applicant = "James";
 			wished_jobs = ["Programmer" ; "Farmer" ; "Plumber"]
