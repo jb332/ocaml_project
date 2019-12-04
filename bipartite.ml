@@ -1,18 +1,7 @@
 open Graph
 open Flow
-
-type applicant = string
-type applicants = applicant list
-
-type job = string
-type jobs = job list
-
-type applicant_wishes = {
-	applicant: applicant;
-	wished_jobs: jobs
-}
-
-type applicants_wishes = applicant_wishes list
+open Gfile
+open Applicant
 
 type id_string_entry = (string * id)
 type id_string_table = id_string_entry list
@@ -123,23 +112,7 @@ let solve_bipartite aw =
 	print_affectations graph_out cor_table
 
 let test_bipartite =
-	let aw = [
-		{
-			applicant = "John";
-			wished_jobs = ["Carpenter"; "Mason"]
-		} ; {
-			applicant = "Joe";
-			wished_jobs = ["Farmer" ; "Baker" ; "Carpenter"]
-		} ; {
-			applicant = "Jack";
-			wished_jobs = ["Carpenter"; "Mason"]
-		} ; {
-			applicant = "Jake";
-			wished_jobs = ["Carpenter"; "Mason"]
-		} ; {
-			applicant = "James";
-			wished_jobs = ["Programmer" ; "Farmer" ; "Plumber"]
-		}
-	] in
+	let aw = from_file_candidate "candidat"
+	 in
 	solve_bipartite aw
 

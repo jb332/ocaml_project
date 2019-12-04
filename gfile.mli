@@ -2,7 +2,7 @@
  * Write a graph to a file. *)
 
 open Graph
-open Bipartite
+open Applicant
 
 type path = string
 
