@@ -1,6 +1,6 @@
 open Graph
+open Bipartite
 open Printf
-open Applicant
     
 type path = string
 

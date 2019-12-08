@@ -1,13 +1,23 @@
 open Graph
 open Flow
-open Gfile
-open Applicant
+
+(* Type definitions *)
+type applicant = string
+type applicants = applicant list
+
+type job = string
+type jobs = job list
+
+type applicant_wishes = {
+	applicant: applicant;
+	wished_jobs: jobs
+}
+
+type applicants_wishes = applicant_wishes list
+
 
 type id_string_entry = (string * id)
 type id_string_table = id_string_entry list
-
-(* Create a function that extracts the file data to create an applicants_wishes object *)
-
 
 
 
@@ -25,14 +35,7 @@ let rec get_jobs aw = match aw with
 	| [] -> []
 	| {applicant; wished_jobs} :: rest -> or_on_lists wished_jobs (get_jobs rest)
 
-(* Returns a correspondance table between a node id and the source, the names, the jobs, and the sink *)
-
-(*
-let add_elements lst_of_aw aw = List.fold_left (fun ((elem_str, elem_id) :: other_entries) elmeent -> ((element, elem_id + 1) :: (elem_str, elem_id) :: other_entries)) [("Source", 0)] (lst_of_aw aw)
-let add_applicants = add_elements get_applicants
-let add_jobs = add_elements get_jobs
-*)
-
+(* Returns a correspondance table between a node id and an applicant, a job or even the source or the sink *)
 let associate_ids applicants jobs =
 	let rec add_applicants n applicants = match applicants with
 		| [] -> []
@@ -48,18 +51,20 @@ let associate_ids applicants jobs =
   let nb_jobs = List.length job_str_id_list in
   List.concat [ [("Source", 0)] ; app_str_id_list ; job_str_id_list ; [("Sink", nb_applicants+nb_jobs+1)] ]
 
+(* Get the id associated with a job, an applicant, the source or the sink *)
 let get_id_of_str cor_table str = List.assoc str cor_table
 
+(* Get the job, applicant, sink or source assoiated with an id *)
 let get_str_of_id cor_table id =
 	let element = List.find (fun (current_str, current_id) -> current_id = id) cor_table in
 	match element with (str_found, id_found) -> str_found
 
-(*List.assoc id (List.map (fun (str, id) -> (id, str)) cor_table)*)
-
+(* Test function *)
 let rec print_cor_table cor_table = match cor_table with
 	| [] -> Printf.printf "\n\n%!"
 	| (str, id) :: rest -> Printf.printf "\n%s -> %d%!" str id; print_cor_table rest
 
+(* Generate an adapted flow graph from the problem input data (arguments are voluntarily redundant to spare processing *)
 let generate_graph aw cor_table applicants jobs =
 	let generate_nodes cor_table = 
 		let nodes = List.map (fun (_, id) -> id) cor_table in
@@ -89,6 +94,7 @@ let generate_graph aw cor_table applicants jobs =
 	in
 	add_source_arcs (add_sink_arcs (generate_arcs aw (generate_nodes cor_table)) jobs) applicants
 
+(* Print the solution *)
 let print_affectations graph_out cor_table =
 	let applicant_nodes = List.map (fun (id, _) -> id) (out_arcs graph_out 0) in
 	let get_attributed_job_node applicant_node =
@@ -103,6 +109,7 @@ let print_affectations graph_out cor_table =
 	in
 	List.iter print_affectation applicant_nodes
 
+(* Solve the problem *)
 let solve_bipartite aw =
 	let applicants = get_applicants aw in
 	let jobs = get_jobs aw in
@@ -110,9 +117,4 @@ let solve_bipartite aw =
 	let graph_in = generate_graph aw cor_table applicants jobs in
 	let graph_out = ford_fulkerson graph_in 0 ((List.length cor_table)-1) false in
 	print_affectations graph_out cor_table
-
-let test_bipartite =
-	let aw = from_file_candidate "candidat"
-	 in
-	solve_bipartite aw
 

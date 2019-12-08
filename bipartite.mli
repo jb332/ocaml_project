@@ -1,6 +1,16 @@
-open Graph
-open Flow
+type applicant = string
+type applicants = applicant list
 
-val test_bipartite: unit
+type job = string
+type jobs = job list
 
+type applicant_wishes = {
+	applicant: applicant;
+	wished_jobs: jobs
+}
+
+type applicants_wishes = applicant_wishes list
+
+
+val solve_bipartite: applicants_wishes -> unit
 
