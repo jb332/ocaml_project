@@ -39,8 +39,7 @@ let () =
 
 	export "graph_dot.gv" fgraph_str;
 	export outfile new_graph_str;
-	(* List.iter (fun i -> Printf.printf "%s: " i.applicant; List.iter (fun i -> Printf.printf "%s " i) i.wished_jobs; Printf.printf " \n %!") liste_applicants *)
-
+	
 	(*
 	This is the command to convert ".gv" files into ".svg" vectorial images :
 	"dot -Tsvg graph_dot.gv > graph.svg && dot -Tsvg new_graph_dot.gv > new_graph.svg"
